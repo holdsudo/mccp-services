@@ -385,14 +385,81 @@ function measure() {
 }
 measure();
 const state = { scroll: scrollY, smooth: scrollY, active: 0, time: 0 };
+
+/* ---------- tap mode (phones): tap-to-advance story instead of scrolling ---------- */
+chapters.forEach(c => { c.beats = c.copies.map(cp => ({ in: Math.max(0, cp.in), hold: Math.min(1, cp.out - .1) })); if (!c.beats.length) c.beats.push({ in: 0, hold: 1 }); });
+const TAP_SPEED = 1 / 5.5;                       // chapter-units per second while auto-playing a beat
+const tap = { on: false, cur: 0, beat: 0, t: 0, hold: 0 };
+const tapnav = $('#tapnav'), tapBar = $('[data-tap-bar]'), tapNextBtn = $('[data-tap-next]'), tapBackBtn = $('[data-tap-back]'), tapHint = $('[data-tap-hint]');
+if (tapBar) tapBar.innerHTML = chapters.map(() => '<i></i>').join('');
+const tapSegs = tapBar ? Array.from(tapBar.children) : [];
+const footerEl = $('.footer'), footerHome = footerEl && footerEl.parentNode, contactEl = chapters[chapters.length - 1].el;
+let hintTimer = 0;
+function goChapter(k) {
+  k = clamp(k, 0, chapters.length - 1);
+  const prev = chapters[tap.cur].el;
+  tap.cur = k; tap.beat = 0; tap.t = chapters[k].beats[0].in; tap.hold = chapters[k].beats[0].hold;
+  if (k === chapters.length - 1) { tap.t = 1; tap.hold = 1; }
+  chapterEls.forEach((el, i) => { el.classList.toggle('is-cur', i === k); });
+  if (prev !== chapters[k].el) { prev.classList.add('is-leaving'); setTimeout(() => prev.classList.remove('is-leaving'), 900); }
+  if (k === chapters.length - 1) contactEl.scrollTop = 0;
+  drag.flipped = 0; tapReplay = -1; hotspotEls.forEach(o => o.classList.remove('is-open'));
+}
+function tapNext() {
+  const c = chapters[tap.cur];
+  if (tap.t < tap.hold - .03) { tap.t = tap.hold; return; }               // skip to the hold point
+  if (tap.beat < c.beats.length - 1) { tap.beat++; tap.hold = c.beats[tap.beat].hold; return; }
+  goChapter(tap.cur + 1);
+}
+function tapBack() {
+  const c = chapters[tap.cur];
+  if (tap.beat > 0) { tap.beat--; tap.t = c.beats[tap.beat].in; tap.hold = c.beats[tap.beat].hold; return; }
+  goChapter(tap.cur - 1);
+}
+function setTapMode(on) {
+  if (on === tap.on) return; tap.on = on;
+  document.body.classList.toggle('is-tap', on);
+  if (on) {
+    document.documentElement.style.overflow = 'hidden'; window.scrollTo(0, 0);
+    if (footerEl && contactEl && footerEl.parentNode !== contactEl) contactEl.appendChild(footerEl);
+    goChapter(0); clearTimeout(hintTimer); hintTimer = setTimeout(() => tapHint && tapHint.classList.add('is-on'), 1800); setTimeout(() => tapHint && tapHint.classList.remove('is-on'), 7000);
+  } else {
+    document.documentElement.style.overflow = '';
+    if (footerEl && footerHome && footerEl.parentNode !== footerHome) footerHome.appendChild(footerEl);
+    chapterEls.forEach(el => el.classList.remove('is-cur', 'is-leaving')); measure();
+  }
+}
+const wantsTap = () => window.matchMedia('(pointer: coarse)').matches || innerWidth < 960;
+if (tapNextBtn) tapNextBtn.addEventListener('click', (e) => { e.stopPropagation(); tapNext(); });
+if (tapBackBtn) tapBackBtn.addEventListener('click', (e) => { e.stopPropagation(); tapBack(); });
+let tp = null;
+document.addEventListener('pointerdown', (e) => { tp = { x: e.clientX, y: e.clientY }; }, { passive: true });
+document.addEventListener('pointerup', (e) => {
+  if (!tap.on || !tp) return; const dx = e.clientX - tp.x, dy = e.clientY - tp.y, moved = Math.hypot(dx, dy); tp = null;
+  const ignore = e.target.closest && e.target.closest('a, button, input, select, textarea, label, .hotspot, .calc, .nav, .mobile-menu, .tapnav, form, .ch--flow, .preloader');
+  if (moved > 48 && Math.abs(dx) > Math.abs(dy) * 1.3 && tap.cur !== 0) { dx < 0 ? tapNext() : tapBack(); return; }   // swipe (not in hero where drag spins the card)
+  if (ignore || moved > 12) return;
+  if (e.clientX < innerWidth * .18) tapBack(); else tapNext();
+}, { passive: true });
+document.addEventListener('keydown', (e) => { if (!tap.on) return; if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); tapNext(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); tapBack(); } });
 window.addEventListener('scroll', () => { state.scroll = scrollY; document.body.classList.toggle('is-scrolled', scrollY > 40); }, { passive: true });
 
 function updateChapters() {
   const s = state.smooth; let active = 0;
-  chapters.forEach((c, i) => {
-    c.t = c.pin > 1 ? clamp((s - c.top) / c.pin) : clamp((s - c.top + innerHeight * .6) / innerHeight);
-    if (s >= c.top - innerHeight * .12) active = i;
-  });
+  if (tap.on) {
+    chapters.forEach((c, i) => { c.t = i < tap.cur ? 1 : i > tap.cur ? 0 : tap.t; });
+    active = tap.cur;
+    const last = tap.cur === chapters.length - 1, ready = tap.t >= tap.hold - .03;
+    tapSegs.forEach((seg, i) => seg.style.setProperty('--p', (i < tap.cur ? 100 : i > tap.cur ? 0 : tap.t * 100).toFixed(1) + '%'));
+    if (tapNextBtn) { tapNextBtn.classList.toggle('is-hidden', last); tapNextBtn.classList.toggle('is-ready', ready); tapNextBtn.innerHTML = ready ? 'Continue &#8250;' : 'Skip &#8250;'; }
+    if (tapBackBtn) tapBackBtn.classList.toggle('is-hidden', tap.cur === 0 && tap.beat === 0);
+    const navEl = $('.nav'); if (navEl) navEl.classList.toggle('is-scrolled', last || tap.cur > 0);
+  } else {
+    chapters.forEach((c, i) => {
+      c.t = c.pin > 1 ? clamp((s - c.top) / c.pin) : clamp((s - c.top + innerHeight * .6) / innerHeight);
+      if (s >= c.top - innerHeight * .12) active = i;
+    });
+  }
   state.active = active;
   // HTML copy opacity driven by local t
   chapters.forEach(c => c.copies.forEach(cp => {
@@ -409,7 +476,7 @@ function updateChapters() {
 
 /* chapter nav */
 const chnavLinks = $$('#chnav a');
-chnavLinks.forEach((a, i) => a.addEventListener('click', (e) => { e.preventDefault(); const c = chapters[i]; const y = c.pin > 1 ? c.top + c.pin * .08 : c.top - 40; window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); }));
+chnavLinks.forEach((a, i) => a.addEventListener('click', (e) => { e.preventDefault(); if (tap.on) { goChapter(i); return; } const c = chapters[i]; const y = c.pin > 1 ? c.top + c.pin * .08 : c.top - 40; window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); }));
 
 /* ================================================================== POINTER / INTERACTION */
 const pointer = { x: 0, y: 0, nx: 0, ny: 0, down: false };
@@ -462,11 +529,11 @@ function stageTargets(k, t, tm) {
   switch (k) {
     case 0: // hero — card right (desktop) / top (phone)
       camFrom.set(0, .15, 8.8); camTo.set(0, .1, 8.2); look.set(0, P ? -.3 : -.1, 0);
-      cpos.set(P ? 0 : offAt(.78, 8.5), P ? 2.15 : .1, 0); crot.set(.12 + drag.rotX, -.35 + drag.rotY + drag.flipped * Math.PI, 0); cscale = P ? .64 : 1; auto = 1;
+      cpos.set(P ? 0 : offAt(.78, 8.5), P ? 2.15 : .1, 0); crot.set(.12 + drag.rotX, -.35 + drag.rotY + drag.flipped * Math.PI, 0); cscale = P ? .82 : 1; auto = 1;
       break;
     case 1: // exploded view
       camFrom.set(0, .3, 7.6); camTo.set(.2, .2, 6.8); look.set(0, P ? -.4 : 0, 0);
-      cpos.set(P ? 0 : offAt(.72, 7.2), P ? 1.1 : 0, 0); crot.set(.28, .62 + Math.sin(tm * .3) * .05, -.08); cscale = P ? .62 : .82; cexp = smooth(.12, .5, t) * (1 - smooth(.78, .96, t)); auto = 0;
+      cpos.set(P ? 0 : offAt(.72, 7.2), P ? 1.1 : 0, 0); crot.set(.28, .62 + Math.sin(tm * .3) * .05, -.08); cscale = P ? .76 : .82; cexp = smooth(.12, .5, t) * (1 - smooth(.78, .96, t)); auto = 0;
       break;
     case 2: { // tap on terminal
       const tx = terminal.position.x, ty = terminal.position.y;
@@ -480,7 +547,7 @@ function stageTargets(k, t, tm) {
       else if (tt < .45) { const u = easeInOut((tt - .3) / .15); cpos.lerpVectors(B, C, u); crot.set(lerp(RX, -.32 - .2, u), .06, 0); }
       else if (tt < .8) { cpos.copy(C).add(V(0, Math.sin(tm * 2) * .012, 0)); crot.set(-.32 - .2, .06, 0); }
       else { const u = easeInOut((tt - .8) / .2); cpos.lerpVectors(C, D, u); crot.set(lerp(-.52, -.2, u), lerp(.06, .5, u), 0); }
-      cscale = P ? .62 : .72; auto = 0;
+      cscale = P ? .74 : .72; auto = 0;
       // terminal feedback
       drawScreen(tt < .3 ? 'idle' : tt < .45 ? 'reading' : tt < .75 ? 'approved' : 'funded');
       const rp = smooth(.45, .75, tt); terminal.userData.ring.scale.setScalar(.2 + rp * 1.6); terminal.userData.ring.material.opacity = (1 - rp) * .9 * (tt > .45 ? 1 : 0);
@@ -502,7 +569,7 @@ function stageTargets(k, t, tm) {
       break;
     case 6: // security shell around card
       camFrom.set(.2, .3, 8.2); camTo.set(.4, .2, 7.4); look.set(P ? 0 : shell.position.x - offAt(.73, 7.8), P ? -.5 : 0, 0);
-      cpos.set(P ? 0 : shell.position.x, P ? 1.0 : 0, 0); crot.set(.15, tm * .35, 0); cscale = P ? .55 : .58; auto = 0;
+      cpos.set(P ? 0 : shell.position.x, P ? 1.0 : 0, 0); crot.set(.15, tm * .35, 0); cscale = P ? .68 : .58; auto = 0;
       break;
     case 7: // agents network
       camFrom.set(0, .4, 9.8); camTo.set(-.3, .2, 8.8); look.set(P ? 0 : net.position.x - offAt(.32, 9.3), P ? -1.4 : 0, 0);
@@ -520,21 +587,21 @@ function stageTargets(k, t, tm) {
 
 /* ================================================================== RESIZE */
 function layoutStages() {
-  const P = portrait, sx = P ? .72 : 1;
-  terminal.position.copy(stagePos(2)).add(new THREE.Vector3(P ? 0 : -2.2, P ? .35 : -1.35, 0)); terminal.scale.setScalar(P ? .78 : .92);
+  const P = portrait, sx = P ? .88 : 1;
+  terminal.position.copy(stagePos(2)).add(new THREE.Vector3(P ? 0 : -2.2, P ? .35 : -1.35, 0)); terminal.scale.setScalar(P ? .95 : .92);
   coins.position.copy(stagePos(4)).add(new THREE.Vector3(P ? 0 : 2.7, P ? -1.2 : -2.2, 0)); coins.scale.setScalar(sx);
-  bars.position.copy(stagePos(5)).add(new THREE.Vector3(P ? 0 : -3.1, P ? -.9 : -1.6, 0)); bars.scale.setScalar(P ? .6 : .56);
+  bars.position.copy(stagePos(5)).add(new THREE.Vector3(P ? 0 : -3.1, P ? -.9 : -1.6, 0)); bars.scale.setScalar(P ? .72 : .56);
   shell.position.copy(stagePos(6)).add(new THREE.Vector3(P ? 0 : 3.1, P ? 1.0 : 0, 0));
-  net.position.copy(stagePos(7)).add(new THREE.Vector3(P ? 0 : -2.9, P ? .4 : 0, 0)); net.scale.setScalar(P ? .7 : .85);
-  flow.scale.setScalar(P ? .5 : .95); flow.position.copy(stagePos(3)).add(new THREE.Vector3(0, P ? .4 : -2.7, 0));
+  net.position.copy(stagePos(7)).add(new THREE.Vector3(P ? 0 : -2.9, P ? .4 : 0, 0)); net.scale.setScalar(P ? .82 : .85);
+  flow.scale.setScalar(P ? .62 : .95); flow.position.copy(stagePos(3)).add(new THREE.Vector3(0, P ? .4 : -2.7, 0));
 }
 function resize() {
-  measure(); layoutStages();
+  measure(); layoutStages(); setTapMode(wantsTap());
   camera.aspect = innerWidth / innerHeight; camera.fov = portrait ? 62 : 40; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight);
   bloom.resolution.set(innerWidth, innerHeight);
 }
-layoutStages();
+layoutStages(); setTapMode(wantsTap());
 let rT; window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(resize, 100); });
 
 /* ================================================================== PROJECT HELPERS */
@@ -557,6 +624,7 @@ function tick() {
   const dt = Math.min(clock.getDelta(), .05); state.time += dt; const tm = state.time;
   state.smooth = reduce ? state.scroll : lerp(state.smooth, state.scroll, damp(9, dt));
   if (Math.abs(state.smooth - state.scroll) < .3) state.smooth = state.scroll;
+  if (tap.on && tap.t < tap.hold) tap.t = Math.min(tap.hold, tap.t + dt * TAP_SPEED * (reduce ? 4 : 1));
   updateChapters();
 
   const k = state.active, c = chapters[k];
@@ -613,7 +681,7 @@ function tick() {
       stageEl.classList.toggle('is-hover', true); } else if (hoverBar !== -1) { hoverBar = -1; barTip && barTip.classList.remove('is-on'); } }
 
   /* shell */
-  { const t = chapters[6].t; const a = smooth(.02, .4, t) * (1 - smooth(.9, 1, t)); shell.scale.setScalar(Math.max(a * (portrait ? .62 : .68), .0001)); shell.visible = a > .002;
+  { const t = chapters[6].t; const a = smooth(.02, .4, t) * (1 - smooth(.9, 1, t)); shell.scale.setScalar(Math.max(a * (portrait ? .78 : .68), .0001)); shell.visible = a > .002;
     shell.userData.ico.rotation.y = tm * .15 + pointer.nx * .3; shell.userData.ico.rotation.x = pointer.ny * .2; shell.userData.pts.rotation.copy(shell.userData.ico.rotation);
     shell.userData.r1.rotation.x = tm * .3; shell.userData.r1.rotation.y = tm * .2; shell.userData.r2.rotation.z = tm * .25; }
 

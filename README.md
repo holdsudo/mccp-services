@@ -11,7 +11,7 @@ Website refresh for **mccp.services** — static, framework-free, hosted on GitH
 - Google Fonts: Outfit (display) + Inter (body). Forms: Formspree (AJAX, no backend).
 
 ## Interactions (home)
-drag/flip the hero card · hover/click hotspots on the exploded card · "Replay the tap" · monthly-volume slider (drives the fee stack + savings math) · hover the 3D chart · chapter dots (right) · custom cursor · preloader. Phone: chapter copy sits under the 3D view with a scrim; motion respects `prefers-reduced-motion`.
+drag/flip the hero card · hover/click hotspots on the exploded card · "Replay the tap" · monthly-volume slider (drives the fee stack + savings math) · hover the 3D chart · chapter dots (right) · custom cursor · preloader. **Phones / touch:** the story switches to **tap-to-advance** (no page scrolling): each chapter is a full-screen slide, the 3D plays to a hold point, then tap anywhere / swipe left / the Continue pill advances to the next beat or chapter; tap the left edge / back button to go back; story progress bar under the nav; the contact slide scrolls internally with the footer. Motion respects `prefers-reduced-motion`.
 
 ## Editing pages
 Pages are generated from `tools/gen.py` (shared head/nav/footer) + `tools/home.part.html` (home chapters). Edit those, then run `python3 tools/gen.py` from anywhere — it rewrites the HTML in the repo root.
