@@ -67,45 +67,6 @@
     counters.forEach(c => io.observe(c));
   }
 
-  /* ---------------- 3D tilt + spotlight on cards ---------------- */
-  if (fine && !reduce) {
-    $$('.card, .stat, .pack, .number').forEach(card => {
-      let raf = 0;
-      card.addEventListener('pointermove', e => {
-        const r = card.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        card.style.setProperty('--mx', `${x}px`); card.style.setProperty('--my', `${y}px`);
-        if (!card.classList.contains('card')) return;
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(() => {
-          const rx = ((y / r.height) - 0.5) * -6, ry = ((x / r.width) - 0.5) * 8;
-          card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px)`;
-        });
-      });
-      card.addEventListener('pointerleave', () => { cancelAnimationFrame(raf); card.style.transform = ''; });
-    });
-  }
-
-  /* ---------------- magnetic buttons ---------------- */
-  if (fine && !reduce) {
-    $$('.btn--primary').forEach(btn => {
-      btn.addEventListener('pointermove', e => {
-        const r = btn.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width / 2)) * 0.18, dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
-        btn.style.transform = `translate(${dx}px, ${dy}px)`;
-      });
-      btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
-    });
-  }
-
-  /* ---------------- cursor glow ---------------- */
-  if (fine && !reduce && !document.body.classList.contains('is-cinema')) {
-    const g = document.createElement('div'); g.className = 'cursor-glow'; document.body.appendChild(g);
-    let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y;
-    window.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; g.style.opacity = '1'; }, { passive: true });
-    (function loop() { x += (tx - x) * 0.12; y += (ty - y) * 0.12; g.style.transform = `translate(${x - 210}px, ${y - 210}px)`; requestAnimationFrame(loop); })();
-  }
-
   /* ---------------- sticky mobile CTA ---------------- */
   const sticky = $('.sticky-cta');
   if (sticky) {
@@ -161,6 +122,14 @@
       } finally { if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = orig; } }
     });
   });
+
+  /* ---------------- savings calculator ---------------- */
+  const volInput = $('[data-vol]');
+  if (volInput) {
+    const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+    const upd = () => { const v = parseFloat(volInput.value); volInput.style.setProperty('--p', ((v - 5000) / 245000 * 100) + '%'); $('[data-vol-out]').textContent = fmt(v); $('[data-fee-now]').textContent = fmt(v * .032); $('[data-fee-year]').textContent = fmt(v * .032 * 12); };
+    volInput.addEventListener('input', upd); upd();
+  }
 
   /* ---------------- footer year ---------------- */
   $$('[data-year]').forEach(el => el.textContent = new Date().getFullYear());

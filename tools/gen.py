@@ -206,18 +206,17 @@ def feature_card(icon, title, text, viz='', cls=''):
   <p>{text}</p>
 </article>'''
 
-ICON['drag'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>'
-ICON['replay'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>'
 HOME = open(os.path.join(S, 'home.part.html')).read()
-for k, v in {'{ARROW}': ICON['arrow'], '{PHONEICON}': ICON['phone'], '{CHECK}': ICON['check'], '{DRAGICON}': ICON['drag'], '{REPLAYICON}': ICON['replay'], '{TEL}': TEL, '{PHONE}': PHONE}.items():
+BANKS = ''.join(f'<span class="marquee__item"><i></i>{n}</span>' for n in ['Wells Fargo Bank, N.A.','RBS WorldPay','Deutsche Bank USA','Merrick Bank','Harris N.A.','Fifth Third Bank']*2)
+for k, v in {'{ARROW}': ICON['arrow'], '{PHONEICON}': ICON['phone'], '{CHECK}': ICON['check'], '{TEL}': TEL, '{PHONE}': PHONE, '{BANKS}': BANKS,
+             '{ICON_CARD}': ICON['card'], '{ICON_GLOBE}': ICON['globe'], '{ICON_MOBILE}': ICON['mobile'], '{ICON_REPEAT}': ICON['repeat'], '{ICON_SHIELD}': ICON['shield'],
+             '{ICON_ZAP}': ICON['zap'], '{ICON_CHART}': ICON['chart'], '{ICON_LAYERS}': ICON['layers'], '{ICON_BUILDING}': ICON['building'], '{ICON_HEADSET}': ICON['headset']}.items():
     HOME = HOME.replace(k, v)
 
-LD = ''
-
-IMPORTMAP = '<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js","three/addons/":"./assets/vendor/addons/"}}</script>\n<link rel="stylesheet" href="cinema.css">\n<link rel="modulepreload" href="assets/vendor/three.module.min.js">'
-page('index.html', 'MCCPS — Merchant Credit Card Processing Services | Payments, re-engineered',
+IMPORTMAP = '<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js","three/addons/":"./assets/vendor/addons/"}}</script>\n<link rel="modulepreload" href="assets/vendor/three.module.min.js">'
+page('index.html', 'MCCPS — Merchant Credit Card Processing Services | Payment processing, made simple',
      'M.C.C.P.S secure payment processing takes the guesswork out of accepting credit cards online, in person and over the phone. Low rates, zero-fee program, next-day funding, 24/7 support. Get a free savings analysis.',
-     HOME, scene=False, sticky=False, extra_head=LD + '\n' + IMPORTMAP, module='experience.js', body_class='is-cinema')
+     HOME, scene=False, sticky=True, extra_head=IMPORTMAP, module='hero-card.js')
 
 # ============================================================ FREE ANALYSIS
 FA = f'''
@@ -311,7 +310,7 @@ FA = f'''
 '''
 page('free-analysis.html', 'Free Savings Analysis — MCCPS Merchant Credit Card Processing',
      'Find out quickly if MCCPS can save your business money on credit card processing fees. Three quick steps, no obligation. Upload two statements and we do the rest.',
-     FA, sticky=False, bg=True)
+     FA, sticky=False)
 
 # ============================================================ AGENTS
 AG = f'''
@@ -418,7 +417,7 @@ AG = f'''
 '''
 page('agents.html', 'Become an MCCPS Agent — Independent Sales Agents & ISOs',
      'MCCPS is looking for independent sales agents and ISOs nationwide. Monthly residuals, fast e-sign approvals, multiple platforms and banks, personalized marketing packages.',
-     AG, sticky=False, bg=True)
+     AG, sticky=False)
 
 # ============================================================ FAQ
 FAQS = [
@@ -460,7 +459,7 @@ FQ = f'''
 '''
 page('faq.html', 'Agent FAQ — MCCPS Independent Sales Agents',
      'Frequently asked questions for MCCPS independent sales agents: how you earn residuals, building a team, training, reporting and more.',
-     FQ, sticky=False, extra_head='<script type="application/ld+json">'+json.dumps(FAQ_LD)+'</script>', bg=True)
+     FQ, sticky=False, extra_head='<script type="application/ld+json">'+json.dumps(FAQ_LD)+'</script>')
 
 # ============================================================ LEGAL
 def prose_from_txt(fn, title):
@@ -522,7 +521,7 @@ for fn, path, title, kicker in [('terms-of-use.txt','terms.html','MCCPS LLC Term
   </div>
 </section>
 '''
-    page(path, f'{title} — MCCPS', f'{title} for www.mccp.services, Merchant Credit Card Processing Services LLC.', pg, sticky=False, bg=True)
+    page(path, f'{title} — MCCPS', f'{title} for www.mccp.services, Merchant Credit Card Processing Services LLC.', pg, sticky=False)
 
 # ============================================================ 404
 NF = f'''
@@ -535,4 +534,4 @@ NF = f'''
   </div>
 </section>
 '''
-page('404.html', 'Page not found — MCCPS', 'Page not found.', NF, sticky=False, bg=True)
+page('404.html', 'Page not found — MCCPS', 'Page not found.', NF, sticky=False)

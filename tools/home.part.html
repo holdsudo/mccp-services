@@ -1,235 +1,163 @@
-<!-- ===================== PRELOADER ===================== -->
-<div class="preloader" id="preloader" aria-hidden="true">
-  <div class="preloader__inner">
-    <img src="assets/logo.png" alt="" width="236" height="76">
-    <div class="preloader__bar"><i></i></div>
-    <div class="preloader__label"><span data-load-pct>0</span>% — preparing your experience</div>
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <span class="eyebrow reveal is-visible"><span class="eyebrow__dot"></span> Zero Processing Fees · Next-day funding</span>
+      <h1 class="words">Payment processing, made simple.</h1>
+      <p class="hero__sub reveal" style="--d:300ms">Accept cards in store, online and on the go with one account, lower rates and real people to call 24/7. Ask about our Zero Processing Fees program.</p>
+      <div class="hero__actions reveal" style="--d:420ms">
+        <a class="btn btn--primary btn--lg" href="free-analysis.html">Get a free savings analysis {ARROW}</a>
+        <a class="btn btn--ghost btn--lg" href="{TEL}">{PHONEICON} {PHONE}</a>
+      </div>
+      <div class="hero__meta reveal" style="--d:540ms">
+        <span>{CHECK} No obligation</span>
+        <span>{CHECK} Keep your terminals</span>
+        <span>{CHECK} Setup in days</span>
+      </div>
+    </div>
+    <div class="hero__visual reveal reveal--scale" style="--d:200ms" data-hero-card>
+      <canvas id="hero-canvas" aria-label="3D MCCPS payment card" role="img"></canvas>
+      <span class="hero__visual-hint">Drag to rotate · tap to flip</span>
+    </div>
   </div>
-</div>
+  <div class="container">
+    <div class="hero__stats" data-stagger>
+      <div class="stat reveal"><div class="stat__num" data-count="24" data-suffix="/7">0/7</div><div class="stat__label">Live technical support</div></div>
+      <div class="stat reveal"><div class="stat__num">$0</div><div class="stat__label">Fees with our Zero program</div></div>
+      <div class="stat reveal"><div class="stat__num">Next day</div><div class="stat__label">Funding available</div></div>
+      <div class="stat reveal"><div class="stat__num">PCI</div><div class="stat__label">Compliant &amp; encrypted</div></div>
+    </div>
+  </div>
+</section>
 
-<!-- ===================== 3D STAGE (fixed) ===================== -->
-<div class="stage" id="stage" aria-hidden="true">
-  <canvas id="gl"></canvas>
-  <div class="stage__labels" id="labels"></div>
-</div>
-<div class="scrim" aria-hidden="true"></div>
+<section class="marquee" aria-label="Affiliations">
+  <div class="marquee__label">Processing through registered ISOs of</div>
+  <div class="marquee__track">{BANKS}</div>
+</section>
 
-<!-- ===================== CHAPTER NAV ===================== -->
-<nav class="chnav" aria-label="Chapters" id="chnav">
-  <a href="#hero" data-go="0"><span>Intro</span></a>
-  <a href="#engineered" data-go="1"><span>The card</span></a>
-  <a href="#tap" data-go="2"><span>Tap to pay</span></a>
-  <a href="#flow" data-go="3"><span>The network</span></a>
-  <a href="#zero" data-go="4"><span>Zero fees</span></a>
-  <a href="#insights" data-go="5"><span>Insights</span></a>
-  <a href="#secure" data-go="6"><span>Security</span></a>
-  <a href="#agents" data-go="7"><span>Agents</span></a>
-  <a href="#contact" data-go="8"><span>Contact</span></a>
-</nav>
+<!-- ================= WAYS TO PAY ================= -->
+<section class="section" id="platform">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="kicker">One account, every channel</span>
+      <h2 class="h2">Take payments however your customers want to pay.</h2>
+      <p class="lead">EMV chip, tap to pay, Apple Pay and Google Pay, online checkout, phone orders, invoices and subscriptions — all under one roof.</p>
+    </div>
+    <div class="bento bento--4" data-stagger>
+      <article class="card reveal"><div class="card__visual"><div class="viz-chip"></div></div><div class="card__icon">{ICON_CARD}</div><h3>In store</h3><p>Countertop terminals, card readers and tap-to-phone. Keep re-programmable terminals you already own.</p></article>
+      <article class="card reveal"><div class="card__icon">{ICON_GLOBE}</div><h3>Online</h3><p>A secure gateway that plugs into your website, cart or invoicing. Multiple gateways to fit your needs.</p></article>
+      <article class="card reveal"><div class="card__visual"><div class="viz-phone"></div></div><div class="card__icon">{ICON_MOBILE}</div><h3>On the go</h3><p>Mobile readers and key-entry for deliveries, markets, service calls and phone orders.</p></article>
+      <article class="card reveal"><div class="card__visual"><div class="viz-pulse"><i></i><i></i><i></i></div></div><div class="card__icon">{ICON_REPEAT}</div><h3>Recurring</h3><p>Subscriptions, memberships and payment plans with automated billing and reporting.</p></article>
+    </div>
+  </div>
+</section>
 
-<!-- ===================== TAP NAV (phones: tap-to-advance story) ===================== -->
-<div class="tapnav" id="tapnav" aria-hidden="true">
-  <div class="tapnav__bar" data-tap-bar></div>
-  <button class="tapnav__back" type="button" data-tap-back aria-label="Previous">&#8249;</button>
-  <button class="tapnav__next" type="button" data-tap-next aria-label="Continue">Tap to continue &#8250;</button>
-  <div class="tapnav__hint" data-tap-hint>Tap anywhere to continue · tap left edge to go back</div>
-</div>
-
-<main class="story" id="story">
-
-  <!-- 0 HERO -->
-  <section class="ch ch--hero" id="hero" data-ch="hero" data-h="170">
-    <div class="ch__pin">
-      <div class="container ch__grid">
-        <div class="copy copy--hero" data-in="0" data-out="0.7">
-          <span class="eyebrow"><span class="eyebrow__dot"></span> Zero Processing Fees · Next-day funding</span>
-          <h1 class="display">Payments,<br><em>re-engineered.</em></h1>
-          <p class="lead-xl">One platform for every way your customers pay — in store, online, on the go. Lower rates, 24/7 human support, and a card program that can take your processing fees to zero.</p>
-          <div class="hero__actions">
-            <a class="btn btn--primary btn--lg" href="free-analysis.html" data-cursor="link">Get a free savings analysis {ARROW}</a>
-            <a class="btn btn--ghost btn--lg" href="{TEL}" data-cursor="link">{PHONEICON} {PHONE}</a>
+<!-- ================= ZERO FEES ================= -->
+<section class="section section--alt" id="zero">
+  <div class="container">
+    <div class="split">
+      <div class="zero-card reveal reveal--scale">
+        <img src="assets/zero-logo.png" alt="Zero Processing Fees program" width="170" height="170">
+        <div class="zero-card__body">
+          <strong>Zero Processing Fees</strong>
+          <p>A compliant dual-pricing program that can take your card processing cost to $0.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <span class="kicker">Lower your biggest hidden cost</span>
+        <h2 class="h2">See what you'd save.</h2>
+        <p class="lead">Most merchants pay 2.5–3.5% of every sale to their processor without knowing it. Slide to estimate what that adds up to — then let us show you the real numbers from your statements.</p>
+        <div class="calc" data-calc>
+          <label for="vol">Monthly card volume <output data-vol-out>$25,000</output></label>
+          <input id="vol" type="range" min="5000" max="250000" step="1000" value="25000" data-vol>
+          <div class="calc__grid">
+            <div><small>Typical cost today*</small><strong data-fee-now>$0</strong></div>
+            <div><small>With MCCPS Zero</small><strong class="gt">$0</strong></div>
+            <div><small>Saved per year</small><strong data-fee-year>$0</strong></div>
           </div>
-          <div class="hero__hint"><span class="drag-hint" data-drag-hint>{DRAGICON} Drag the card · tap to flip</span></div>
+          <p class="form-note">*Illustrative at a 3.2% effective rate. Your free analysis shows your actual numbers.</p>
         </div>
+        <div class="hero__actions"><a class="btn btn--primary" href="free-analysis.html">Start my free analysis {ARROW}</a></div>
       </div>
-      <div class="scroll-cue" aria-hidden="true"><span></span> Scroll to explore</div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 1 ENGINEERED (exploded card) -->
-  <section class="ch" id="engineered" data-ch="explode" data-h="280">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--left">
-        <div class="copy" data-in="0.04" data-out="0.38">
-          <span class="kicker">Built for every way to pay</span>
-          <h2 class="display-2">Every layer, <span class="gt">engineered.</span></h2>
-          <p class="lead">EMV chip. Contactless. Swipe. Wallets. One account accepts them all — in person, online and over the phone.</p>
-        </div>
-        <div class="copy" data-in="0.46" data-out="0.94">
-          <span class="kicker">Accept everything</span>
-          <h2 class="display-2">Visa, Mastercard, Amex, Discover — <span class="gt">and every wallet.</span></h2>
-          <p class="lead">Integrates with any POS, smartphone or terminal you already own. If it's re-programmable, keep it.</p>
-          <ul class="pills"><li>EMV chip</li><li>Tap to pay</li><li>Apple Pay · Google Pay</li><li>Debit & PIN</li><li>B2B Level 2 / 3</li></ul>
-        </div>
-      </div>
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section__head section__head--center reveal">
+      <span class="kicker">How it works</span>
+      <h2 class="h2">Three steps. No obligation.</h2>
+      <p class="lead">Your time is valuable, so the analysis is quick and painless — and you keep your existing hardware wherever possible.</p>
     </div>
-  </section>
+    <div class="steps" data-stagger>
+      <div class="step reveal"><div class="step__n">1</div><h3>Tell us about your business</h3><p>Retail, online, mobile or not accepting cards yet — a few quick questions.</p></div>
+      <div class="step reveal"><div class="step__n">2</div><h3>Send two statements</h3><p>We review two months of processing statements line by line and show you where the money goes.</p></div>
+      <div class="step reveal"><div class="step__n">3</div><h3>Switch and save</h3><p>We set you up, program your terminals and stay with you — real support, 24/7.</p></div>
+    </div>
+    <div class="center mt-3 reveal"><a class="btn btn--primary btn--lg" href="free-analysis.html">Get my free analysis {ARROW}</a></div>
+  </div>
+</section>
 
-  <!-- 2 TAP -->
-  <section class="ch" id="tap" data-ch="tap" data-h="320">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--right">
-        <div class="copy" data-in="0.02" data-out="0.3">
-          <span class="kicker">In person</span>
-          <h2 class="display-2">Tap.</h2>
-          <p class="lead">Modern terminals, card readers and tap-to-phone — fast checkout that feels effortless.</p>
-        </div>
-        <div class="copy" data-in="0.36" data-out="0.62">
-          <span class="kicker">Authorized</span>
-          <h2 class="display-2">Approved <span class="gt">in under a second.</span></h2>
-          <p class="lead">Multiple gateways and issuing banks behind every transaction, so approvals are fast and reliable.</p>
-        </div>
-        <div class="copy" data-in="0.68" data-out="0.96">
-          <span class="kicker">Settled</span>
-          <h2 class="display-2">Funded <span class="gt">next day.</span></h2>
-          <p class="lead">Next-day funding available, so cash flow never waits on your processor.</p>
-          <button class="btn btn--ghost" type="button" data-replay data-cursor="link">{REPLAYICON} Replay the tap</button>
-        </div>
-      </div>
+<!-- ================= INCLUDED ================= -->
+<section class="section section--alt" id="included">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="kicker">Everything included</span>
+      <h2 class="h2">The essentials, done right.</h2>
     </div>
-  </section>
+    <div class="bento" data-stagger>
+      <article class="card reveal"><div class="card__icon">{ICON_SHIELD}</div><h3>PCI compliance</h3><p>End-to-end encryption and compliance guidance, so security isn't your problem to solve.</p></article>
+      <article class="card reveal"><div class="card__icon">{ICON_ZAP}</div><h3>Next-day funding</h3><p>Deposits the next business day, so cash flow never waits on your processor.</p></article>
+      <article class="card reveal"><div class="card__visual"><div class="viz-bars"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="card__icon">{ICON_CHART}</div><h3>Reporting dashboard</h3><p>Real-time reporting on transactions, deposits and chargebacks.</p></article>
+      <article class="card reveal"><div class="card__icon">{ICON_LAYERS}</div><h3>Works with any POS</h3><p>Integrates with your POS, smartphone or terminal. Multiple platforms and issuing banks.</p></article>
+      <article class="card reveal"><div class="card__icon">{ICON_BUILDING}</div><h3>B2B Level 2 / 3</h3><p>Lower interchange on corporate and purchasing cards with enhanced data.</p></article>
+      <article class="card reveal card--green"><div class="card__icon">{ICON_HEADSET}</div><h3>Real people, 24/7</h3><p>Free technical support and personal, first-hand customer service — call {PHONE} any time.</p></article>
+    </div>
+  </div>
+</section>
 
-  <!-- 3 FLOW -->
-  <section class="ch" id="flow" data-ch="flow" data-h="260">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--top">
-        <div class="copy copy--center" data-in="0.03" data-out="0.5">
-          <span class="kicker">One platform</span>
-          <h2 class="display-2">Terminal to bank, <span class="gt">one unbroken line.</span></h2>
-          <p class="lead">Gateway, processor, issuing bank — orchestrated under one roof, with one point of contact.</p>
-        </div>
-        <div class="copy copy--center" data-in="0.56" data-out="0.95">
-          <span class="kicker">Registered ISO partnerships</span>
-          <h2 class="display-2">Backed by <span class="gt">the banks.</span></h2>
-          <p class="lead">Our strategic partners are registered ISOs of six major issuing banks — so we match every merchant to the right platform.</p>
-        </div>
+<!-- ================= AGENTS ================= -->
+<section class="section" id="agents">
+  <div class="container">
+    <div class="cta-band reveal reveal--scale">
+      <span class="kicker">Independent sales agents &amp; ISOs</span>
+      <h2 class="mt-1">Refer merchants. Earn every month.</h2>
+      <p>Join our team of independent sales agents. We lower your merchants' fees — you earn residuals for as long as they process with MCCPS, plus overrides on your team.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="agents.html">Become an MCCPS Agent {ARROW}</a>
+        <a class="btn btn--ghost" href="faq.html">Read the agent FAQ</a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 4 ZERO -->
-  <section class="ch" id="zero" data-ch="zero" data-h="300">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--left">
-        <div class="copy" data-in="0.03" data-out="0.4">
-          <span class="kicker">What you pay today</span>
-          <h2 class="display-2">Fees stack up. <span class="gt">Quietly.</span></h2>
-          <p class="lead">Every swipe, every month — interchange, markups, statement fees. Most merchants never see the whole stack.</p>
-        </div>
-        <div class="copy" data-in="0.46" data-out="0.96">
-          <span class="kicker">Zero Processing Fees program</span>
-          <h2 class="display-2">Watch it <span class="gt">disappear.</span></h2>
-          <p class="lead">Our compliant dual-pricing program can eliminate your card processing costs entirely. Slide to see what that means for your business.</p>
-          <div class="calc" data-calc>
-            <label for="vol">Monthly card volume <output data-vol-out>$25,000</output></label>
-            <input id="vol" type="range" min="5000" max="250000" step="1000" value="25000" data-vol data-cursor="link">
-            <div class="calc__grid">
-              <div><small>Typical cost today*</small><strong data-fee-now>$0</strong></div>
-              <div><small>With MCCPS Zero</small><strong class="gt">$0</strong></div>
-              <div><small>Saved per year</small><strong data-fee-year>$0</strong></div>
-            </div>
-            <p class="form-note">*Illustrative at 3.2% effective rate. Your free analysis shows your actual numbers.</p>
-          </div>
-        </div>
+<!-- ================= CONTACT ================= -->
+<section class="section section--tight" id="contact">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <span class="kicker">Talk to us</span>
+        <h2 class="h2">Ready to pay less to accept cards?</h2>
+        <p class="lead">Leave your details and an MCCPS specialist will reach out — or call us now, any time.</p>
+        <a class="footer__phone mt-2" href="{TEL}" style="font-size:1.7rem">{PHONEICON} {PHONE}</a>
+        <p class="muted small mt-1">24/7 customer service. No obligation.</p>
       </div>
-      <div class="zero-counter" data-zero-counter aria-hidden="true"><span data-zero-pct>3.2</span><small>%</small></div>
-    </div>
-  </section>
-
-  <!-- 5 INSIGHTS -->
-  <section class="ch" id="insights" data-ch="insights" data-h="260">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--right">
-        <div class="copy" data-in="0.03" data-out="0.5">
-          <span class="kicker">Analytics dashboard & tools</span>
-          <h2 class="display-2">See every dollar <span class="gt">move.</span></h2>
-          <p class="lead">Real-time reporting on transactions, deposits and chargebacks — for owners and for agents. Hover the chart.</p>
+      <form class="form-card reveal" data-form="quick-contact" action="#" novalidate>
+        <input type="hidden" name="_subject" value="MCCPS — Quick Contact">
+        <input type="text" name="_gotcha" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="form-grid">
+          <div class="field"><label for="qc-first">First name <span class="req">*</span></label><input id="qc-first" name="first_name" required autocomplete="given-name"></div>
+          <div class="field"><label for="qc-last">Last name <span class="req">*</span></label><input id="qc-last" name="last_name" required autocomplete="family-name"></div>
+          <div class="field full"><label for="qc-biz">Business name <span class="req">*</span></label><input id="qc-biz" name="business_name" required autocomplete="organization"></div>
+          <div class="field"><label for="qc-email">Email <span class="req">*</span></label><input id="qc-email" type="email" name="email" required autocomplete="email"></div>
+          <div class="field"><label for="qc-phone">Phone <span class="req">*</span></label><input id="qc-phone" type="tel" name="phone" required autocomplete="tel"></div>
+          <div class="field full"><button class="btn btn--primary btn--block" type="submit">Send {ARROW}</button></div>
         </div>
-        <div class="copy" data-in="0.56" data-out="0.95">
-          <span class="kicker">Recurring & one-time</span>
-          <h2 class="display-2">Automate <span class="gt">the repeat business.</span></h2>
-          <p class="lead">Subscriptions, memberships, payment plans — state-of-the-art tooling for automated billing.</p>
-          <div class="tiles">
-            <div class="tile"><strong data-count="24" data-suffix="/7">0</strong><small>Live support</small></div>
-            <div class="tile"><strong>Next day</strong><small>Funding</small></div>
-            <div class="tile"><strong data-count="100" data-suffix="%">0</strong><small>Reporting visibility</small></div>
-          </div>
-        </div>
-      </div>
-      <div class="bar-tip" data-bar-tip aria-hidden="true"></div>
+        <div class="form-status" role="status" aria-live="polite"></div>
+        <p class="form-note mt-1">By submitting you agree to our <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a>.</p>
+      </form>
     </div>
-  </section>
-
-  <!-- 6 SECURE -->
-  <section class="ch" id="secure" data-ch="secure" data-h="240">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--left">
-        <div class="copy" data-in="0.04" data-out="0.95">
-          <span class="kicker">Security</span>
-          <h2 class="display-2">PCI compliant. <span class="gt">Encrypted end to end.</span></h2>
-          <p class="lead">Tokenization, EMV, fraud tools and compliance handled — so you can focus on the business, not the breach.</p>
-          <ul class="check-list">
-            <li>{CHECK}<span>PCI DSS compliance guidance included</span></li>
-            <li>{CHECK}<span>EMV chip &amp; contactless encryption</span></li>
-            <li>{CHECK}<span>24/7 free technical support, real humans</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7 AGENTS -->
-  <section class="ch" id="agents" data-ch="agents" data-h="220">
-    <div class="ch__pin">
-      <div class="container ch__grid ch__grid--right">
-        <div class="copy" data-in="0.04" data-out="0.95">
-          <span class="kicker">Independent sales agents & ISOs</span>
-          <h2 class="display-2">Build a network. <span class="gt">Earn every month.</span></h2>
-          <p class="lead">Refer merchants, we lower their fees — you earn residuals for as long as they process with MCCPS. Build a team and earn overrides on theirs.</p>
-          <div class="hero__actions">
-            <a class="btn btn--primary" href="agents.html" data-cursor="link">Become an MCCPS Agent {ARROW}</a>
-            <a class="btn btn--ghost" href="faq.html" data-cursor="link">Agent FAQ</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8 CONTACT (normal flow) -->
-  <section class="ch ch--flow" id="contact" data-ch="contact" data-h="0">
-    <div class="container">
-      <div class="split">
-        <div class="reveal">
-          <span class="kicker">Start here</span>
-          <h2 class="display-2">Ready to accept cards <span class="gt">the smarter way?</span></h2>
-          <p class="lead">Leave your details and an MCCPS specialist will reach out — or call us now, any time, 24/7.</p>
-          <a class="footer__phone mt-2" href="{TEL}" style="font-size:1.8rem" data-cursor="link">{PHONEICON} {PHONE}</a>
-        </div>
-        <form class="form-card reveal" data-form="quick-contact" action="#" novalidate>
-          <input type="hidden" name="_subject" value="MCCPS — Quick Contact">
-          <input type="text" name="_gotcha" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div class="form-grid">
-            <div class="field"><label for="qc-first">First name <span class="req">*</span></label><input id="qc-first" name="first_name" required autocomplete="given-name"></div>
-            <div class="field"><label for="qc-last">Last name <span class="req">*</span></label><input id="qc-last" name="last_name" required autocomplete="family-name"></div>
-            <div class="field full"><label for="qc-biz">Business name <span class="req">*</span></label><input id="qc-biz" name="business_name" required autocomplete="organization"></div>
-            <div class="field"><label for="qc-email">Email <span class="req">*</span></label><input id="qc-email" type="email" name="email" required autocomplete="email"></div>
-            <div class="field"><label for="qc-phone">Phone <span class="req">*</span></label><input id="qc-phone" type="tel" name="phone" required autocomplete="tel"></div>
-            <div class="field full"><button class="btn btn--primary btn--block" type="submit" data-cursor="link">Send {ARROW}</button></div>
-          </div>
-          <div class="form-status" role="status" aria-live="polite"></div>
-          <p class="form-note mt-1">By submitting you agree to our <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a>.</p>
-        </form>
-      </div>
-    </div>
-  </section>
-</main>
+  </div>
+</section>
