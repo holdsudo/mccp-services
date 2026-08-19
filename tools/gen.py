@@ -27,7 +27,42 @@ ICON = {
 
 NAV_LINKS = [('index.html','Home'),('free-analysis.html','Free Analysis'),('agents.html','Become an Agent'),('faq.html','Agent FAQ')]
 
+PAGE_META = {
+  'index.html':        {'crumb': 'Home', 'type': 'website'},
+  'free-analysis.html':{'crumb': 'Free Savings Analysis', 'type': 'website'},
+  'agents.html':       {'crumb': 'Become an MCCPS Agent', 'type': 'website'},
+  'faq.html':          {'crumb': 'Agent FAQ', 'type': 'website'},
+  'terms.html':        {'crumb': 'Terms of Use', 'type': 'article'},
+  'privacy.html':      {'crumb': 'Privacy Policy', 'type': 'article'},
+  '404.html':          {'crumb': 'Not found', 'type': 'website', 'noindex': True},
+}
+ORG_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "Organization", "@id": BASE + "#org", "name": "Merchant Credit Card Processing Services (MCCPS)", "alternateName": ["MCCPS", "M.C.C.P.S.", "MCCPS LLC"],
+     "url": "https://www.mccp.services/", "logo": BASE + "assets/logo.png", "image": BASE + "assets/og.jpg", "telephone": "+1-844-826-6227",
+     "contactPoint": [{"@type": "ContactPoint", "telephone": "+1-844-826-6227", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English", "hoursAvailable": "Mo-Su 00:00-23:59"}],
+     "areaServed": "US", "slogan": "Better payment processing starts here."},
+    {"@type": "WebSite", "@id": BASE + "#site", "url": BASE, "name": "MCCPS — Merchant Credit Card Processing Services", "publisher": {"@id": BASE + "#org"}, "inLanguage": "en-US"},
+    {"@type": "FinancialService", "@id": BASE + "#service", "name": "MCCPS Merchant Credit Card Processing", "url": BASE, "telephone": "+1-844-826-6227", "parentOrganization": {"@id": BASE + "#org"}, "areaServed": "US", "priceRange": "$$",
+     "description": "Secure, low-cost merchant credit card processing online, in person and over the phone. Zero Processing Fees program, next-day funding, PCI compliance, 24/7 support.",
+     "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Payment processing services", "itemListElement": [
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "In-person card processing (EMV, contactless, mobile)"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Online / e-commerce payment gateway"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Zero Processing Fees program (dual pricing)"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Free merchant statement savings analysis"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Independent sales agent / ISO program"}}]}}
+  ]}
+
 def head(title, desc, path, extra=''):
+    import json as _j
+    meta = PAGE_META.get(path, {'crumb': title, 'type': 'website'})
+    url = BASE + (path if path != 'index.html' else '')
+    robots = 'noindex, nofollow' if meta.get('noindex') else 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+    crumbs = [{"@type": "ListItem", "position": 1, "name": "Home", "item": BASE}]
+    if path != 'index.html': crumbs.append({"@type": "ListItem", "position": 2, "name": meta['crumb'], "item": url})
+    ld = _j.dumps({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": crumbs})
+    org = _j.dumps(ORG_LD) if path == 'index.html' else ''
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,21 +70,50 @@ def head(title, desc, path, extra=''):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(desc)}">
-<meta name="theme-color" content="#04070f">
-<link rel="canonical" href="{BASE}{path if path!='index.html' else ''}">
+<meta name="robots" content="{robots}">
+<meta name="keywords" content="merchant credit card processing, payment processing, zero processing fees, dual pricing, next day funding, EMV, contactless, payment gateway, POS, ISO agent program, MCCPS">
+<meta name="author" content="MCCPS LLC">
+<meta name="theme-color" content="#02050c">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="{url}">
+<link rel="manifest" href="site.webmanifest">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<!-- Open Graph (iMessage, WhatsApp, Facebook, LinkedIn, Slack link previews) -->
+<meta property="og:type" content="{meta['type']}">
 <meta property="og:site_name" content="MCCPS — Merchant Credit Card Processing Services">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
-<meta property="og:type" content="website">
-<meta property="og:url" content="{BASE}{path if path!='index.html' else ''}">
-<meta property="og:image" content="{BASE}assets/og.png">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{BASE}assets/og.jpg">
+<meta property="og:image:secure_url" content="{BASE}assets/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MCCPS — Payments, re-engineered. 3D payment card over a dark futuristic background.">
+<meta property="og:phone_number" content="+1-844-826-6227">
+<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="twitter:title" content="{html.escape(title)}">
+<meta name="twitter:description" content="{html.escape(desc)}">
+<meta name="twitter:image" content="{BASE}assets/og.jpg">
+<meta name="twitter:image:alt" content="MCCPS — Payments, re-engineered.">
+<!-- iOS / Android -->
+<meta name="apple-mobile-web-app-title" content="MCCPS">
+<meta name="application-name" content="MCCPS">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=yes">
+<meta name="msapplication-TileColor" content="#02050c">
+<meta name="msapplication-TileImage" content="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">{ld}</script>
+{('<script type="application/ld+json">' + org + '</script>') if org else ''}
 {extra}
 </head>
 <body>
@@ -148,9 +212,7 @@ HOME = open(os.path.join(S, 'home.part.html')).read()
 for k, v in {'{ARROW}': ICON['arrow'], '{PHONEICON}': ICON['phone'], '{CHECK}': ICON['check'], '{DRAGICON}': ICON['drag'], '{REPLAYICON}': ICON['replay'], '{TEL}': TEL, '{PHONE}': PHONE}.items():
     HOME = HOME.replace(k, v)
 
-LD = '''<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FinancialService","name":"Merchant Credit Card Processing Services (MCCPS)","alternateName":"MCCPS LLC","url":"https://www.mccp.services/","telephone":"+1-844-826-6227","description":"Secure, low-cost merchant credit card processing online, in person and over the phone. Zero processing fee program, next-day funding, 24/7 support.","areaServed":"US","image":"https://joe-miz.com/mccp-services/assets/og.png"}
-</script>'''
+LD = ''
 
 IMPORTMAP = '<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js","three/addons/":"./assets/vendor/addons/"}}</script>\n<link rel="stylesheet" href="cinema.css">\n<link rel="modulepreload" href="assets/vendor/three.module.min.js">'
 page('index.html', 'MCCPS — Merchant Credit Card Processing Services | Payments, re-engineered',

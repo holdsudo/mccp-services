@@ -1,0 +1,14 @@
+{
+  "name": "MCCPS — Merchant Credit Card Processing Services",
+  "short_name": "MCCPS",
+  "description": "Secure, low-cost merchant credit card processing. Zero Processing Fees program, next-day funding, 24/7 support.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#02050c",
+  "theme_color": "#02050c",
+  "icons": [
+    { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/favicon.png", "sizes": "64x64", "type": "image/png" }
+  ]
+}
