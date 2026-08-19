@@ -219,6 +219,12 @@ p { margin: 0; }
 .stat__num { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -.03em; }
 .stat__label { color: var(--muted); font-size: .85rem; margin-top: .15rem; }
 
+@media (max-width: 959px) {
+  /* phone: 3D card lives in the top ~40% of the first viewport, copy starts below it */
+  .hero { padding-top: calc(var(--nav-h) + 36svh); }
+  .hero__scene { height: 100svh; bottom: auto; }
+  .hero__fade { top: 72svh; height: 28svh; bottom: auto; }
+}
 @media (min-width: 960px) {
   .hero__inner { grid-template-columns: 1.15fr .85fr; align-items: end; gap: 3rem; }
   .hero__stats { grid-template-columns: repeat(2, 1fr); max-width: 520px; justify-self: end; }

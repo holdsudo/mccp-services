@@ -146,11 +146,12 @@ function init(host) {
     const wide = w >= 960;
     // visible half-width of the view plane at z=0 (camera at z=9.5, fov 38)
     const halfW = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 9.5 * camera.aspect;
-    const s = wide ? 0.92 * Math.min(1, h / 900, w / 1300) : Math.min(1, w / 620) * 0.9;
+    const s = wide ? 0.92 * Math.min(1, h / 900, w / 1300) : Math.min(1, w / 620) * 0.95;
     world.scale.setScalar(s);
     // keep the card's right edge (half card width ~1.8 * s + ring) inside the viewport
     world.position.x = wide ? Math.min(2.7, halfW - 2.1 * s - 0.2) : 0;
-    world.position.y = wide ? 1.35 : 1.25;
+    // phone: card centred ~27% from the top of the first viewport (above the headline)
+    world.position.y = wide ? 1.35 : 1.55;
   }
   layout();
   let rT; window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(layout, 120); });
