@@ -60,7 +60,7 @@
     const run = el => {
       const end = parseFloat(el.dataset.count), dec = (el.dataset.count.split('.')[1] || '').length;
       const pre = el.dataset.prefix || '', suf = el.dataset.suffix || ''; const dur = 1600; const t0 = performance.now();
-      const step = now => { const p = Math.min(1, (now - t0) / dur); const e = 1 - Math.pow(1 - p, 3); el.textContent = pre + (end * e).toFixed(dec) + suf; if (p < 1) requestAnimationFrame(step); };
+      const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)); const e = 1 - Math.pow(1 - p, 3); el.textContent = pre + (end * e).toFixed(dec) + suf; if (p < 1) requestAnimationFrame(step); };
       if (reduce) el.textContent = pre + end.toFixed(dec) + suf; else requestAnimationFrame(step);
     };
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: 0.5 });
