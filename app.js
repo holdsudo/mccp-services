@@ -99,7 +99,7 @@
   }
 
   /* ---------------- cursor glow ---------------- */
-  if (fine && !reduce) {
+  if (fine && !reduce && !document.body.classList.contains('is-cinema')) {
     const g = document.createElement('div'); g.className = 'cursor-glow'; document.body.appendChild(g);
     let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y;
     window.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; g.style.opacity = '1'; }, { passive: true });

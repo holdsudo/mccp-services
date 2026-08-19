@@ -6,6 +6,7 @@ const host = document.querySelector('[data-scene]');
 if (host) { if ('requestIdleCallback' in window) requestIdleCallback(() => init(host), { timeout: 400 }); else setTimeout(() => init(host), 60); }
 
 function init(host) {
+  const ambient = host.dataset.scene === 'ambient';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
   const small = window.innerWidth < 760;
@@ -120,6 +121,7 @@ function init(host) {
       }`
   });
   const points = new THREE.Points(pGeo, pMat); scene.add(points);
+  if (ambient) { cardGroup.visible = false; glow.visible = false; rings.forEach(r => r.material.opacity = .25); }
 
   // ---------- grid floor ----------
   const grid = new THREE.GridHelper(60, 60, 0x1e7df0, 0x1e7df0);

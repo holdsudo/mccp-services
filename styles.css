@@ -524,3 +524,7 @@ p { margin: 0; }
 .small { font-size: .88rem; }
 .grid-2 { display: grid; gap: 1rem; } @media (min-width: 760px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
 .glass { background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.6rem; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+
+/* ambient 3D background on sub-pages */
+.page-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .85; }
+.page-bg canvas { width: 100% !important; height: 100% !important; }

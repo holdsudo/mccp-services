@@ -5,10 +5,16 @@ Website refresh for **mccp.services** — static, framework-free, hosted on GitH
 **Live (GitHub Pages):** https://joe-miz.com/mccp-services/
 
 ## Stack
-- Plain HTML / CSS / JS (no build step, no framework)
-- [three.js](https://threejs.org) r169 (vendored at `assets/vendor/three.module.min.js`) — 3D hero: floating MCCPS card, orbit rings, particle field
-- Google Fonts: Outfit (display) + Inter (body)
-- Forms: Formspree (AJAX, no backend)
+- Plain HTML / CSS / JS (no build step, no framework). ES modules + import map (`three` → vendored r169 build, `three/addons/` → vendored postprocessing/geometry addons).
+- **Home = one continuous 3D world** (`experience.js`): a single persistent three.js scene with bloom; the camera flies between "stages" as you scroll through pinned chapters (hero → exploded card with hotspots → tap-to-pay on a 3D terminal → terminal-to-bank network → fee stack collapsing to zero with a live savings slider → 3D analytics with hover → security shell → agent network → contact). Everything is procedural — no model files.
+- Sub-pages share the nav/footer and run a light ambient 3D background (`scene.js`, `data-scene="ambient"`).
+- Google Fonts: Outfit (display) + Inter (body). Forms: Formspree (AJAX, no backend).
+
+## Interactions (home)
+drag/flip the hero card · hover/click hotspots on the exploded card · "Replay the tap" · monthly-volume slider (drives the fee stack + savings math) · hover the 3D chart · chapter dots (right) · custom cursor · preloader. Phone: chapter copy sits under the 3D view with a scrim; motion respects `prefers-reduced-motion`.
+
+## Editing pages
+Pages are generated from `tools/gen.py` (shared head/nav/footer) + `tools/home.part.html` (home chapters). Edit those, then run `python3 tools/gen.py` from anywhere — it rewrites the HTML in the repo root.
 
 ## Pages
 | File | Purpose |
